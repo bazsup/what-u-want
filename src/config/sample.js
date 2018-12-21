@@ -1,3 +1,3 @@
 export default {
-  APP_NAME: 'What U want'
+  APP_NAME: 'Value is what u want'
 }
