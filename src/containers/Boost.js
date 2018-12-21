@@ -1,13 +1,38 @@
 import React, { Component } from 'react'
-import { Container, Row, Col } from 'reactstrap'
-import { Button, Card } from 'antd'
-import { notification } from 'antd'
+import styled from 'styled-components'
+import {
+  Container,
+  Row,
+  Col
+} from 'reactstrap'
+import {
+  Button,
+  Card,
+  notification
+} from 'antd'
+
+
 
 import { insert, update } from '../tools/firebase'
 
 import Favicon from '../static/images/favicon.jpg'
 
 import { PostContext } from '../context/post'
+
+const Input = styled.input`
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #cdcdcd;
+  outline: 0;
+  transition: all 0.3s ease;
+  :hover, :focus {
+    border-color: #3CB288;
+  }
+  :focus {
+    box-shadow: 0px 0px 0px 2px rgba(60, 178, 136, 0.3);
+  }
+
+`
 
 const postCollection = '/post'
 
@@ -29,6 +54,7 @@ class Boost extends Component {
       name: this.state.postname,
       description: this.state.description,
     }
+    console.log(post)
     insert(postCollection, post)
     openNotificationWithIcon('success', 'Add post success!')
     this.clearForm()
@@ -65,7 +91,6 @@ class Boost extends Component {
                 alt="favicon meme"
               />
               <Button type="primary" icon="download" size="large" >Download</Button>
-              <Button type="primary" icon="download" size='large'>Download</Button>
               </Col>
             </Row>
           </Col>
@@ -75,7 +100,7 @@ class Boost extends Component {
             <form onSubmit={this.addPost} method="POST">
               <div className="form-group">
                 <label>Post name</label>
-                <input
+                <Input
                   className="control"
                   required
                   name="postname"
@@ -86,7 +111,7 @@ class Boost extends Component {
               </div>
               <div className="form-group">
                 <label>Description</label>
-                <input
+                <Input
                   className="control"
                   value={this.state.description}
                   required
@@ -95,12 +120,12 @@ class Boost extends Component {
                   onChange={(e) => { this.setField(e.target.name, e.target.value) }}
                 />
               </div>
-              <button className="btn btn-primary w-100 mt-3" type="submit">Add</button>
+              <Button type="primary" htmlType="submit" className="w-100 mt-3">Add</Button>
             </form>
           </Col>
         </Row>
         <Row>
-          <Col className="mt-4">
+          <Col className="my-4">
             <PostContext.Consumer>
               {(posts) => {
                 return (

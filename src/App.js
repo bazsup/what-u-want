@@ -24,10 +24,10 @@ class App extends Component {
   getAllPost = () => {
     getAll('/post').on('value', (snap) => {
       const postValues = snap.val()
-      if (!postValues) return false
+      if (!postValues) return this.setState({ posts: [] })
 
       const postKeys = Object.keys(snap.val()).reverse()
-
+      
       const posts = postKeys.map((key) => {
         return {
           key,
