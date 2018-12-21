@@ -8,10 +8,38 @@ import NotFound from './containers/NotFound'
 
 import Navbar from './components/core/Navbar'
 
+import { PostContext } from './context/post'
+
+import { getAll } from './tools/firebase'
+
 class App extends Component {
+  state = {
+    posts: []
+  }
+
+  componentDidMount () {
+    this.getAllPost()  
+  }
+
+  getAllPost = () => {
+    getAll('/post').on('value', (snap) => {
+      const postValues = snap.val()
+      if (!postValues) return false
+
+      const postKeys = Object.keys(snap.val()).reverse()
+
+      const posts = postKeys.map((key) => {
+        return {
+          key,
+          ...postValues[key]
+        }
+      })
+      this.setState({ posts })
+    })
+  }
   render() {
     return (
-      <div>
+      <PostContext.Provider value={this.state.posts}>
         <Navbar />
         <Switch>
           <Route exact path="/" component={Home} />
@@ -19,7 +47,7 @@ class App extends Component {
           <Route path="/boost" component={Boost} />
           <Route component={NotFound} />
         </Switch>
-      </div>
+      </PostContext.Provider>
     )
   }
 }
