@@ -5,6 +5,7 @@ import Home from './containers/Home'
 import Boost from './containers/Boost'
 import Post from './containers/Post'
 import NotFound from './containers/NotFound'
+import Files from './containers/Files'
 
 import Navbar from './components/core/Navbar'
 
@@ -45,6 +46,7 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/post/:postid" component={Post} />
           <Route path="/boost" component={Boost} />
+          <Route path="/files" component={Files} />
           <Route component={NotFound} />
         </Switch>
       </PostContext.Provider>

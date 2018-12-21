@@ -1,4 +1,7 @@
-import firebase from "firebase"
+import firebase from "firebase/app"
+import 'firebase/auth'
+import 'firebase/database'
+import 'firebase/storage'
 
 const config = {
   apiKey: "AIzaSyBwih_FW9KhnN2598Bzv2pW9O3jTKGZfik",
@@ -31,5 +34,67 @@ export const insert = (collection, value) => {
 }
 
 export const update = (collection, value) => db.ref(`${collection}`).set({ ...value })
+
+
+firebase.auth().useDeviceLanguage()
+
+export const facebookProvider = new firebase.auth.FacebookAuthProvider()
+
+facebookProvider.addScope('email,user_photos')
+facebookProvider.setCustomParameters({
+  'display': 'popup'
+})
+
+
+export const uploadFile = (uid, file, view) => {
+  
+  const fileExt = file.name.split('.').pop()
+  const name = file.name.split('.')[0]
+  
+  const fileKey = `${Date.now()}-${name}.${fileExt}`
+
+  const storageRef = firebase.storage().ref(`files/${uid}/${fileKey}`)
+  const task = storageRef.put(file)
+    // .then(snapshot => snapshot)
+
+  task.on('state_changed', (snapshot) => {
+    console.log(snapshot.bytesTransferred, snapshot.totalBytes)
+    let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    view.setState({ percentage: percentage })
+  }, (error) => {
+    console.error('error')
+  }, () => {
+    storageRef.getMetadata().then((metadata) => {
+        // Metadata now contains the metadata for 'filepond/${file.name}'
+        let metadataFile = { 
+            name: metadata.name, 
+            size: metadata.size, 
+            contentType: metadata.contentType, 
+            fullPath: metadata.fullPath
+        }
+
+        //Process save metadata
+        const databaseRef = firebase.database().ref(`/files/${uid}`);
+        databaseRef.push({  metadataFile });
+
+    }).catch(function(error) {
+      console.error('upload error:', error.message)
+    });
+  })
+}
+
+export const getFile = (fullPath) => {
+  const storageRef = firebase.storage().ref(fullPath)
+  return storageRef
+      .getDownloadURL()
+      .then(url => {
+        // console.log('91', url)
+        return url
+      })
+      .catch(err => {
+        if (err.code === 'storage/object-not-found') return null
+        return null
+      })
+}
 
 export const auth = firebase.auth

@@ -6,6 +6,7 @@ const Navbar = () => (
   <div>
     <Link to="/">Home</Link> | 
     <Link to="/boost">boost</Link> | 
+    <Link to="/files">files</Link> | 
     <PostContext.Consumer>
       {posts => {
         return posts.map(post => (
