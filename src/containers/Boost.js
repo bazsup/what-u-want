@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Row, Col } from 'reactstrap'
-import { Button, Icon } from 'antd'
+import { Button } from 'antd'
 
 import Favicon from '../static/images/favicon.jpg'
 
